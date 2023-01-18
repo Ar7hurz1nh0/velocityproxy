@@ -2,10 +2,8 @@
 echo "Starting proxy"
 
 deno run --allow-net --allow-write --allow-read getUpdates.ts
-cd cache || exit
-cp -rf -v -u * ..
-cd ..
-rm cache/plugins/*
+cp -rf -v -u cache/* ..
+rm cache/*
 echo "Everything is up to date"
 
 echo "Starting proxy"
