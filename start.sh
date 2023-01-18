@@ -2,7 +2,7 @@
 echo "Starting proxy"
 
 deno run --allow-net --allow-write --allow-read getUpdates.ts
-cp -rf -v -u cache/* ..
+cp -rf -v -u cache/* .
 rm cache/*
 echo "Everything is up to date"
 
