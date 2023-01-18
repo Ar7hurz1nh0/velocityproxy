@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 echo "Starting proxy"
 
+mkdir -p cache
+if [ ! -f cache.json ]
+then
+  touch cache.json
+  echo '{"velocity":{"name":"velocity.jar","sha256":""},"updatedAt":1674070927986,"plugins":[]}' > cache.json
+fi
+
 deno run --allow-net --allow-write --allow-read getUpdates.ts
 cp -rf -v -u cache/* .
 rm cache/*
