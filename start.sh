@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 echo "Starting proxy"
 
-mkdir -p cache
+mkdir -p cache/plugins
 if [ ! -f cache.json ]
 then
   touch cache.json
