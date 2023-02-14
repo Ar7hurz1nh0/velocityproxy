@@ -1,3 +1,5 @@
+//TODO: Add authentication for github
+
 import { download, Destination, DownlodedFile } from "https://deno.land/x/download@v1.0.1/mod.ts";
 import { JenkinsPlugins, GithubPlugins } from './plugins.ts';
 import { encode } from "https://deno.land/std@0.171.0/encoding/hex.ts";
@@ -18,7 +20,7 @@ if (-relativeDate <= 60) {
   Deno.exit();
 }
 else
-  console.log(`Cache was updated ${relativeTime.format(relativeDate, 'minute')} ago. Checking for updates...`);
+  console.log(`Cache was updated ${relativeTime.format(relativeDate, 'minute')}. Checking for updates...`);
 
 async function getJenkinsRelease(url: string, jobs: string[]): Promise<JenkinsRelease[]> {
   url = `${url}job/${jobs.reduce((acc, job) => `${acc}/job/${job}`)}/lastStableBuild/api/json`

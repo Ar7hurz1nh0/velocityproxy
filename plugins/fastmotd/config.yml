@@ -1,0 +1,98 @@
+version: "1.0.3"
+# Available serializers:
+# LEGACY_AMPERSAND - "&c&lExample &c&9Text".
+# LEGACY_SECTION - "§c§lExample §c§9Text".
+# MINIMESSAGE - "<bold><red>Example</red> <blue>Text</blue></bold>". (https://webui.adventure.kyori.net/)
+# GSON - "[{"text":"Example","bold":true,"color":"red"},{"text":" ","bold":true},{"text":"Text","bold":true,"color":"blue"}]". (https://minecraft.tools/en/json_text.php/)
+# GSON_COLOR_DOWNSAMPLING - Same as GSON, but uses downsampling.
+serializer: MINIMESSAGE
+prefix: "FastMOTD <gold>>></gold>"
+
+main:
+  version-name: "CALL DOS MULEKE DOIDO"
+  descriptions:
+    - "<bold><gradient:gold:red>CALL DOS MULEKE DOIDO</gradient></bold>{NL}<gradient:dark_red:red:dark_red>Servidor comunista mt brabo</gradient>"
+  favicons:
+    - "server-icon.png"
+  information:
+    - "<bold><light_purple>Versões recomendadas</light_purple></bold>"
+    - "<bold><green>1.19</green><gray>  ->  </gray><dark_green>1.19.3</dark_green></bold>"
+    - ""
+    - "<bold><aqua>Versões suportadas</aqua></bold>"
+    - "<bold><dark_red>1.13</dark_red><gray>  ->  </gray><dark_green>1.19.3</dark_green></bold>"
+  # How frequently online player count will be updated (in ms)
+  update-rate: 3000
+  # VARIABLE - from max-count parameter
+  # ADD_SOME - will add up the number from max-count parameter to current online players amount
+  max-count-type: VARIABLE
+  max-count: 20
+  fake-online-add-single: 0
+  fake-online-add-percent: 0
+  # Accepted values: from 0.0 to 1.0.
+  # Keep this value as low as possible
+  # Set -1 to disable PNG recompression
+  png-quality: 0.0
+  log-pings: false
+  # Separate MOTDs/favicons/information for different protocol versions
+  # See https://wiki.vg/Protocol_version_numbers
+  versions:
+    # null = disabled
+    descriptions: null
+    # null = disabled
+    favicons: null
+    # null = disabled
+    information: null
+  domains:
+    example.com:25565:
+      description:
+        - "Description for example.com"
+      favicon:
+        - "example-com-server-icon.png"
+      information:
+        - "Information for example.com"
+
+maintenance:
+  maintenance-enabled: false
+  show-version: true
+  should-kick-on-join: true
+  kick-whitelist:
+    - "127.0.0.1"
+  kick-message: "<red>Estamos em manutenção no momento</red>{NL}<gold>Trazendo grandes novidades com essa atualização</gold>"
+  version-name: "EM MANUTENÇÃO"
+  descriptions:
+    - "<bold><red>CDMD</red></bold>{NL} -> Em manutenção"
+  favicons:
+    - "server-icon.png"
+  information:
+    - "Saiba mais: https://blog.cdmd.dev"
+  # -1 = disabled
+  override-online: -1
+  # -1 = disabled
+  override-max-online: -1
+  # Separate MOTDs/favicons/information for different protocol versions
+  # See https://wiki.vg/Protocol_version_numbers
+  versions:
+    # null = disabled
+    descriptions: null
+    # null = disabled
+    favicons: null
+    # null = disabled
+    information: null
+  domains:
+    example.com:25565:
+      description:
+        - "Description for example.com"
+      favicon:
+        - "example-com-server-icon.png"
+      information:
+        - "Information for example.com"
+  command:
+    usage: "{PRFX} Usage: <gold>/maintenance <off|on|toggle></gold>"
+
+shutdown-scheduler:
+  # Server will stop accepting new connections
+  shutdown-scheduler-enabled: false
+  # Server will shut down after everyone has left the server
+  shutdown-on-zero-players: false
+  whitelist:
+    - "127.0.0.1"

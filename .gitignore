@@ -2,7 +2,6 @@ cache
 lang
 logs
 forwarding.secret
-**/*.jar
 **/*.pem
 locales
 cache.json
