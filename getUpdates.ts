@@ -130,7 +130,7 @@ const cacheFile: CacheFile = {
   plugins: pluginCache
 }
 
-await Deno.writeTextFile('./cache/cache.json', JSON.stringify(cacheFile, null, 2));
+await Deno.writeTextFile('./cache.json', JSON.stringify(cacheFile, null, 2));
 
 console.log("Done!");
 export { };

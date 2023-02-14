@@ -23,5 +23,5 @@ java \
   -XX:G1MixedGCLiveThresholdPercent=65 \
   -XX:G1RSetUpdatingPauseTimePercent=4 \
   -XX:+AlwaysPreTouch \
-  -Xmx1G \
+  -Xmx700M \
   -jar velocity.jar
