@@ -5,3 +5,7 @@ forwarding.secret
 **/*.pem
 locales
 cache.json
+.env
+**/*.jar
+**/*.db
+mcsleepingserverstarter

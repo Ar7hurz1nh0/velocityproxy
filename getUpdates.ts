@@ -1,14 +1,15 @@
 //TODO: Add authentication for github
-
-import { download, Destination, DownlodedFile } from "https://deno.land/x/download@v1.0.1/mod.ts";
+import "https://deno.land/x/dotenv@v3.2.0/load.ts"
+import { Octokit } from "https://cdn.skypack.dev/octokit?dts";
+import { download, Destination, DownloadedFile } from "https://deno.land/x/download@v1.0.1/mod.ts";
 import { JenkinsPlugins, GithubPlugins } from './plugins.ts';
 import { encode } from "https://deno.land/std@0.171.0/encoding/hex.ts";
 
 import cache from './cache.json' assert { type: "json" };
 
-const config = {
-  githubRateLimited: false,
-}
+const octokit = Deno.env.get('GITHUB_TOKEN') ? new Octokit({
+  auth: Deno.env.get('GITHUB_TOKEN'),
+}) : new Octokit();
 
 const relativeTime = new Intl.RelativeTimeFormat('en-US', {
   style: "long"
@@ -44,15 +45,12 @@ async function getHash(file: string): Promise<string> {
 }
 
 async function getGithubRelease(author: string, repo: string): Promise<Array<{ name: string, url: string}>> {
-  if (config.githubRateLimited) return [];
-  const url = `https://api.github.com/repos/${author}/${repo}/releases/latest`;
-  const response: GithubRelease = await fetch(url).then(res => res.json());
-  if (response.message) {
-    console.error("Just hit a rate limit. Please try again in a few minutes.");
-    config.githubRateLimited = true;
-    return [];
-  }
-  return response.assets.map(asset => ({ name: asset.name, url: asset.browser_download_url }));
+  octokit
+  const response: { data: GithubRelease[] } = await octokit.request('GET /repos/{owner}/{repo}/releases', {
+    owner: author,
+    repo: repo,
+  });
+  return response.data[0].assets.map(asset => ({ name: asset.name, url: asset.browser_download_url }));
 }
 
 async function getLatestVelocity(): Promise<string> {
@@ -81,7 +79,7 @@ for (const plugin of GithubPlugins) {
   for (const release of releases) {
     if (release.name.startsWith(plugin.filter[0]) && release.name.endsWith(plugin.filter[1])) {
       Plugin.file = `${plugin.name}.jar`;
-      const Download: DownlodedFile = await download(release.url, Plugin);
+      const Download: DownloadedFile = await download(release.url, Plugin);
       console.log(`Downloaded ${plugin.name}, into ${Download.dir} with ${(Download.size / 1024 * 10 >> 0) / 10}KiB`);
       break;
     }
@@ -94,7 +92,7 @@ for (const plugin of JenkinsPlugins) {
   for (const release of releases) {
     if (release.fileName.startsWith(plugin.filter[0]) && release.fileName.endsWith(plugin.filter[1])) {
       Plugin.file = `${plugin.name}.jar`;
-      const Download: DownlodedFile = await download(url + release.relativePath, Plugin);
+      const Download: DownloadedFile = await download(url + release.relativePath, Plugin);
       console.log(`Downloaded ${plugin.name}, into ${Download.dir} with ${(Download.size / 1024 * 10 >> 0) / 10}KiB`);
       break;
     }
@@ -108,8 +106,23 @@ const VelocityFile: Destination = {
 }
 
 const velocity = await getLatestVelocity();
-const Download: DownlodedFile = await download(velocity, VelocityFile);
+const Download: DownloadedFile = await download(velocity, VelocityFile);
 console.log(`Downloaded latest Velocity, into ${Download.dir} with ${(Download.size / 1024 * 10 >> 0) / 10}KiB`);
+await (getGithubRelease('vincss', 'mcsleepingserverstarter').then(
+  releases => releases.filter(
+    release => release.name.startsWith('mcsleepingserverstarter') && release.name.endsWith('linux-x64')
+  )[0]
+)
+.then(
+  release => download(release.url, {
+    file: 'mcsleepingserverstarter',
+    dir: './cache',
+    mode: 0o755
+  })
+)
+.then(
+  d => console.log(`Downloaded latest mcsleepingserverstarter, into ${d.dir} with ${(d.size / 1024 * 10 >> 0) / 10}KiB`)
+))
 
 const pluginCache: Plugin[] = []
 
@@ -133,4 +146,5 @@ const cacheFile: CacheFile = {
 await Deno.writeTextFile('./cache.json', JSON.stringify(cacheFile, null, 2));
 
 console.log("Done!");
+Deno.exit(0);
 export { };

@@ -6,13 +6,13 @@ version: "1.1.11"
 # GSON - "[{"text":"Example","bold":true,"color":"red"},{"text":" ","bold":true},{"text":"Text","bold":true,"color":"blue"}]". (https://minecraft.tools/en/json_text.php/)
 # GSON_COLOR_DOWNSAMPLING - Same as GSON, but uses downsampling.
 serializer: LEGACY_AMPERSAND
-prefix: "LimboAuth &6>>&f"
+prefix: "CDMD Auth &6>>&f"
 
 # Don't use \n, use {NL} for new line, and {PRFX} for prefix.
 main:
   # Maximum time for player to authenticate in milliseconds. If the player stays on the auth limbo for longer than this time, then the player will be kicked.
-  auth-time: 60000
-  enable-bossbar: true
+  auth-time: 600000
+  enable-bossbar: false
   # Available colors: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE
   bossbar-color: RED
   # Available overlays: PROGRESS, NOTCHED_6, NOTCHED_10, NOTCHED_12, NOTCHED_20
@@ -24,7 +24,7 @@ main:
   unsafe-passwords-file: "unsafe_passwords.txt"
   # Players with premium nicknames should register/auth if this option is enabled
   # Players with premium nicknames must login with a premium Minecraft account if this option is disabled
-  online-mode-need-auth: true
+  online-mode-need-auth: false
   # Needs floodgate plugin if disabled.
   floodgate-need-auth: true
   # TOTALLY disables hybrid auth feature
@@ -102,7 +102,7 @@ main:
   # World light level (from 0 to 15)
   world-light-level: 15
   # Available: ADVENTURE, CREATIVE, SURVIVAL, SPECTATOR
-  game-mode: ADVENTURE
+  game-mode: SPECTATOR
   # Custom isPremium URL
   # You can use Mojang one's API (set by default)
   # Or CloudFlare one's: https://api.ashcon.app/mojang/v2/user/%s

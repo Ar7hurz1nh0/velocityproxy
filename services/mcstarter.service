@@ -1,0 +1,15 @@
+[Unit]
+Description=CDMD Watchdog
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=0
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=ubuntu
+WorkingDirectory=/home/ubuntu/velocityproxy
+ExecStart=/home/ubuntu/velocityproxy/mcsleepingserverstarter
+
+[Install]
+WantedBy=multi-user.target

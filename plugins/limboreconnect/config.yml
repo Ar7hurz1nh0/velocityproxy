@@ -1,0 +1,41 @@
+# Available serializers:
+# LEGACY_AMPERSAND - "&c&lExample &c&9Text".
+# LEGACY_SECTION - "§c§lExample §c§9Text".
+# MINIMESSAGE - "<bold><red>Example</red> <blue>Text</blue></bold>". (https://webui.adventure.kyori.net/)
+# GSON - "[{"text":"Example","bold":true,"color":"red"},{"text":" ","bold":true},{"text":"Text","bold":true,"color":"blue"}]". (https://minecraft.tools/en/json_text.php/)
+# GSON_COLOR_DOWNSAMPLING - Same as GSON, but uses downsampling.
+serializer: MINIMESSAGE
+# Send player to the limbo, if disconnect reason contains this text (using regex)
+restart-message: "(?s).*"
+# Server status check interval in milliseconds
+check-interval: 1000
+# Server status check timeout in milliseconds
+ping-timeout: 500
+# Send to limbo or use current server's world
+use-limbo: true
+
+world:
+  # Dimensions: OVERWORLD, NETHER, THE_END
+  dimension: "THE_END"
+  load-world: false
+  world-file-path: "world.schem"
+  world-file-type: WORLDEDIT_SCHEM
+  world-light-level: 15
+  world-coords:
+    x: 0
+    y: 400
+    z: 0
+
+# Empty messages will not be sent
+messages:
+  connecting: "<dark_green>Servidor iniciado!</dark_green>{NL}<gold>Estamos te conectando a ele</gold>"
+  reload: "<green>LimboReconnect reloaded"
+  title-settings:
+    show-delay: 10 # time in ticks
+  titles:
+    - title: ""
+      subtitle: "<gold>Iniciando o servidor</gold><light_purple>.</light_purple>.."
+    - title: ""
+      subtitle: "<gold>Iniciando o servidor</gold>.<light_purple>.</light_purple>."
+    - title: ""
+      subtitle: "<gold>Iniciando o servidor</gold>..<light_purple>.</light_purple>"

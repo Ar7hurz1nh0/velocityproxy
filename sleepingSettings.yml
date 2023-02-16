@@ -1,0 +1,11 @@
+serverName: "[WATCHDOG] Waiting for a connection"
+serverPort: 25524
+bedrockPort: 0
+maxPlayers: 20
+loginMessage: "[WATCHDOG] Sending notification to server"
+serverOnlineMode: false
+webPort: 0
+webStopOnStart: false
+startMinecraft: true
+minecraftCommand: deno run --allow-env --allow-read --allow-net --allow-run start.ts
+version: 1.19.3
