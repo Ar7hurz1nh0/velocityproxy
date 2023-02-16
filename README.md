@@ -9,7 +9,8 @@
 ### Debian
 
 ```bash
-sudo apt install deno openjdk-19-jre
+sudo apt install openjdk-19-jre unzip
+curl -fsSL https://deno.land/x/install/install.sh | sh
 ```
 
 ### Arch
