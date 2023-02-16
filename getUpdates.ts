@@ -1,7 +1,6 @@
-//TODO: Add authentication for github
 import "https://deno.land/x/dotenv@v3.2.0/load.ts"
 import { Octokit } from "https://cdn.skypack.dev/octokit?dts";
-import { download, Destination, DownloadedFile } from "https://deno.land/x/download@v1.0.1/mod.ts";
+import { download, Destination, DownlodedFile as DownloadedFile } from "https://deno.land/x/download@v1.0.1/mod.ts";
 import { JenkinsPlugins, GithubPlugins } from './plugins.ts';
 import { encode } from "https://deno.land/std@0.171.0/encoding/hex.ts";
 
