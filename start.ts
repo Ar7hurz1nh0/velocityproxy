@@ -4,7 +4,7 @@ const decoder = new TextDecoder("utf-8");
 const instance = { InstanceIds: [ Deno.env.get("INSTANCE_ID") ?? "" ] }
 const key = decoder.decode(Deno.readFileSync("forwarding.secret"));
 const mcserver = Deno.env.get("MCSERVER")
-const server = Deno.listen({ port: 8080 });
+const server = Deno.listen({ port: 25500 });
 const socat = Deno.run({
   cmd: ["socat", "-d", "-d", "tcp-listen:25524,reuseaddr,fork", `tcp:${mcserver}`],
   stdout: "piped",
