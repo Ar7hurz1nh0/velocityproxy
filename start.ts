@@ -2,7 +2,7 @@ import "https://deno.land/x/dotenv@v3.2.0/load.ts"
 import { EC2 } from 'npm:@aws-sdk/client-ec2'
 const decoder = new TextDecoder("utf-8");
 const instance = { InstanceIds: [ Deno.env.get("INSTANCE_ID") ?? "" ] }
-const key = decoder.decode(Deno.readFileSync("forwarding.secret"));
+const key = decoder.decode(Deno.readFileSync("forwarding.secret")).trim();
 const mcserver = Deno.env.get("MCSERVER")
 const server = Deno.listen({ port: 25500 });
 const socat = Deno.run({

@@ -33,7 +33,7 @@ cp .env.example .env
 Generate a random string for `forwarding.secret`.
 
 ```bash
-openssl rand -base64 -out "forwarding.secret" 128
+openssl rand -base64 -out "forwarding.secret" 32
 ```
 
 ## Setup systemd
