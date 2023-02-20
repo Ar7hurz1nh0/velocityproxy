@@ -4,8 +4,8 @@ const decoder = new TextDecoder("utf-8");
 const instance = { InstanceIds: [ Deno.env.get("INSTANCE_ID") ?? "" ] }
 const key = decoder.decode(Deno.readFileSync("forwarding.secret")).trim();
 const env = Deno.env.toObject()
-const server = Deno.listen({ port: 25500 });
-const socat = Deno.run({
+const server = Deno.listen({ port: Number(env.WEBPORT) });
+const sshForwarding = Deno.run({
   cmd: ["ssh", "-g", "-L", `${env.SOURCEPORT}:localhost:${env.MCSERVERPORT}`, "-N", `${env.SOURCEUSER}@${env.MCSERVERADDRESS}`, "-i", env.PEMFILE, "-p", env.SSHPORT],
 })
 const ec2 = new EC2({
@@ -15,14 +15,10 @@ const ec2 = new EC2({
     secretAccessKey: Deno.env.get("AWS_SECRET_ACCESS_KEY") ?? "",
   }
 })
-console.log(`Forwarding port 25524 to ${env.MCSERVERADDRESS}:${env.MCSERVERPORT}`);
-console.log(`Listening requests, logging socat output to stdout`);
+console.log(`Forwarding port ${env.SOURCEPORT} to ${env.MCSERVERADDRESS}:${env.MCSERVERPORT}`);
+console.log(`Listening requests, logging ssh output to stdout`);
 
 ec2.startInstances(instance).then(() => console.log("Started Minecraft server"));
-
-(async () => {
-  console.log(decoder.decode(await socat.output()));
-})();
 
 for await (const conn of server) {
   const httpConn = Deno.serveHttp(conn);
@@ -41,8 +37,8 @@ for await (const conn of server) {
         }),
       );
       server.close();
-      socat.kill();
-      await socat.status();
+      sshForwarding.kill();
+      await sshForwarding.status();
       await ec2.stopInstances(instance);
       Deno.exit(0);
     }
