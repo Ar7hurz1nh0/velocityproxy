@@ -3,11 +3,10 @@ import { EC2 } from 'npm:@aws-sdk/client-ec2'
 const decoder = new TextDecoder("utf-8");
 const instance = { InstanceIds: [ Deno.env.get("INSTANCE_ID") ?? "" ] }
 const key = decoder.decode(Deno.readFileSync("forwarding.secret")).trim();
-const mcserver = Deno.env.get("MCSERVER")
+const env = Deno.env.toObject()
 const server = Deno.listen({ port: 25500 });
 const socat = Deno.run({
-  cmd: ["socat", "-d", "-d", "tcp-listen:25524,reuseaddr,fork", `tcp:${mcserver}`],
-  stdout: "piped",
+  cmd: ["ssh", "-g", "-L", `${env.SOURCEPORT}:localhost:${env.MCSERVERPORT}`, "-N", `${env.SOURCEUSER}@${env.MCSERVERADDRESS}`, "-i", env.PEMFILE, "-p", env.SSHPORT],
 })
 const ec2 = new EC2({
   region: 'sa-east-1',
@@ -16,7 +15,7 @@ const ec2 = new EC2({
     secretAccessKey: Deno.env.get("AWS_SECRET_ACCESS_KEY") ?? "",
   }
 })
-console.log(`Forwarding port 25524 to ${mcserver}`);
+console.log(`Forwarding port 25524 to ${env.MCSERVERADDRESS}:${env.MCSERVERPORT}`);
 console.log(`Listening requests, logging socat output to stdout`);
 
 ec2.startInstances(instance).then(() => console.log("Started Minecraft server"));
