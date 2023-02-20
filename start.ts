@@ -6,7 +6,7 @@ const key = decoder.decode(Deno.readFileSync("forwarding.secret")).trim();
 const env = Deno.env.toObject()
 const server = Deno.listen({ port: Number(env.WEBPORT) });
 const sshForwarding = Deno.run({
-  cmd: ["ssh", "-g", "-L", `${env.SOURCEPORT}:localhost:${env.MCSERVERPORT}`, "-N", `${env.SOURCEUSER}@${env.MCSERVERADDRESS}`, "-i", env.PEMFILE, "-p", env.SSHPORT],
+  cmd: ["ssh", "-g", "-L", `${env.SOURCEPORT}:localhost:${env.MCSERVERPORT}`, "-N", `${env.SSHUSER}@${env.MCSERVERADDRESS}`, "-i", env.PEMFILE, "-p", env.SSHPORT],
 })
 const ec2 = new EC2({
   region: 'sa-east-1',
