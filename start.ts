@@ -242,13 +242,12 @@ if (await Bun.file("plugins.lock.json").exists()) {
 
   do {
     failed_plugins = []
-    for (let i = 0; i < modrinth_projects.length; i++) {
-      const project = modrinth_projects[i];
+    await Promise.all(modrinth_projects.map(async project => {
 
       if (request_failed(project)) {
         failed_plugins.push(project[0]);
         await render_line(chalk.redBright(`Failed to get latest version of ${chalk.yellow(project[1])}. Retrying... (${chalk.bgRed.bold.white(`${tries} attemps left`)})`));
-        continue;
+        return;
       };
 
       const findIndex = lock.modrinth_plugins.findIndex(p => p.project_id === project[0].project_id);
@@ -269,7 +268,7 @@ if (await Bun.file("plugins.lock.json").exists()) {
         await download_modrinth(latest_version, url);
         lock.modrinth_plugins.push(latest_version);
       }
-    }
+    }))
 
     modrinth_projects = await Promise.all(failed_plugins.map(get_latest_version_modrinth));
   }
@@ -294,9 +293,30 @@ if (await Bun.file("plugins.lock.json").exists()) {
   // create folder for plugins
   mkdirSync("./plugins", { recursive: true });
 
-  await download_velocity(lock.velocity.version, lock.velocity.build);
-  await download_geyser(lock.geyser.version, lock.geyser.build);
-  await download_floodgate(lock.floodgate.version, lock.floodgate.build);
+  type Download = PromiseSettledResult<void | null>
+  let downloads: [Download, Download, Download] = await Promise.allSettled([
+    // null,
+    download_velocity(lock.velocity.version, lock.velocity.build),
+    download_geyser(lock.geyser.version, lock.geyser.build),
+    download_floodgate(lock.floodgate.version, lock.floodgate.build),
+  ])
+
+  while (true) {
+    let pass = true;
+    const new_downloads: [Promise<void> | null, Promise<void> | null, Promise<void> | null] = [null, null, null]
+    for (let i = 0; i < 3; i++) {
+      if (downloads[i]?.status === "rejected") {
+        pass = false;
+        switch (i) {
+          case 0: new_downloads[0] = download_velocity(lock.velocity.version, lock.velocity.build); break
+          case 1: new_downloads[1] = download_geyser(lock.geyser.version, lock.geyser.build); break
+          case 2: new_downloads[2] = download_floodgate(lock.floodgate.version, lock.floodgate.build); break
+        }
+      }
+    }
+    if (pass) break;
+    downloads = await Promise.allSettled(new_downloads);
+  }
 
   let modrinth_plugins: ([ModrinthFile, string] | [ModrinthPlugin, string])[] = await Promise.all(ModrinthPlugins.map(get_latest_version_modrinth));
   let failed_plugins: ModrinthPlugin[] = [];
@@ -304,16 +324,16 @@ if (await Bun.file("plugins.lock.json").exists()) {
   do {
     failed_plugins = []
 
-    for (const plugin of modrinth_plugins) {
+    await Promise.all(modrinth_plugins.map(async plugin => {
       if (request_failed(plugin)) {
         failed_plugins.push(plugin[0]);
         await render_line(chalk.redBright(`Failed to get latest version of ${chalk.yellow(plugin[1])}. Retrying... (${chalk.bgRed.bold.white(`${tries} attemps left`)})`));
-        continue;
+        return;
       };
       const [latest_version, url] = plugin;
       await download_modrinth(latest_version, url);
       lock.modrinth_plugins.push(latest_version);
-    }
+    }))
 
     modrinth_plugins = await Promise.all(failed_plugins.map(get_latest_version_modrinth));
   }
@@ -333,4 +353,6 @@ import { config } from "./config";
 
 Bun.spawn({
   cmd: [config.velocity.java_path, ...config.velocity.java_args],
+  stdout: "inherit",
+  stdin: "inherit"
 })
