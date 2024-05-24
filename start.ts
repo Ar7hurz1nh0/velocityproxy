@@ -116,7 +116,7 @@ async function check_latest_floodgate(): Promise<File> {
 
 async function download_velocity(version: string, build: number) {
   const line_id = await render_line(chalk.blueBright(`Downloading Velocity ${chalk.yellow(version)} build ${chalk.yellow(build)}... `));
-  await download((() => { throw new Error("TODO") })(), "./velocity.jar");
+  await download(`https://api.papermc.io/v2/projects/velocity/versions/${version}/builds/${build}/downloads/velocity-${version}-${build}.jar`, "./velocity.jar");
   await append_to_line(line_id, chalk.greenBright("Done!"));
 }
 
@@ -216,13 +216,13 @@ let tries = 5;
 // check if plugins.lock.json exists
 if (await Bun.file("plugins.lock.json").exists()) {
   const lock: LockFile = await Bun.file("plugins.lock.json").json();
-  // {
-  //   const latest_velocity = await check_latest_velocity();
-  //   if (semver.order(latest_velocity.version, lock.velocity.version) === 1) {
-  //     await download_velocity(latest_velocity.version, latest_velocity.build);
-  //     lock.velocity = latest_velocity;
-  //   }
-  // }
+  {
+    const latest_velocity = await check_latest_velocity();
+    if (semver.order(latest_velocity.version, lock.velocity.version) === 1) {
+      await download_velocity(latest_velocity.version, latest_velocity.build);
+      lock.velocity = latest_velocity;
+    }
+  }
   {
     const latest_geyser = await check_latest_geyser();
     if (semver.order(latest_geyser.version, lock.geyser.version) === 1) {
@@ -285,8 +285,8 @@ if (await Bun.file("plugins.lock.json").exists()) {
   // if not, create it
   const lock: LockFile = {
     lastUpdated: Date.now(),
-    // velocity: await check_latest_velocity(),
-    velocity: null as unknown as File,
+    velocity: await check_latest_velocity(),
+    // velocity: null as unknown as File,
     geyser: await check_latest_geyser(),
     floodgate: await check_latest_floodgate(),
     modrinth_plugins: []
@@ -295,7 +295,7 @@ if (await Bun.file("plugins.lock.json").exists()) {
   // create folder for plugins
   mkdirSync("./plugins", { recursive: true });
 
-  // await download_velocity(lock.velocity.version, lock.velocity.build);
+  await download_velocity(lock.velocity.version, lock.velocity.build);
   await download_geyser(lock.geyser.version, lock.geyser.build);
   await download_floodgate(lock.floodgate.version, lock.floodgate.build);
 

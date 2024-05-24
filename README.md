@@ -1,6 +1,6 @@
 # Dependencies
 
-`bun`, `java` and `ssh`
+`bun@^1.1.9`, `java` and `ssh`
 
 # Setup
 
