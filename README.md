@@ -1,6 +1,6 @@
 # Dependencies
 
-`bun@^1.1.9`, `java` and `ssh`
+`curl`, `bun@^1.1.9`, `java` and `ssh`
 
 # Setup
 

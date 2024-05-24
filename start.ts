@@ -1,6 +1,6 @@
 #! /bin/env bun
 
-import { semver } from "bun";
+import { $, semver } from "bun";
 import axios from "axios";
 import { version } from "./package.json"
 import chalk from "chalk";
@@ -46,8 +46,7 @@ const fetch = async (...args: Parameters<typeof fetch_>) => {
 }
 
 async function download(url: string, path: string) {
-  const result = await fetch(url).then(res => res.data);
-  await Bun.write(path, result);
+  await $`curl -fsSL "${url}" > "${path}"`
 }
 
 ///---- Velocity, Geyser, Floodgate stuff ----///
