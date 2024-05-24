@@ -23,6 +23,12 @@ sudo pacman -S jre-openjdk
 
 ## Configure
 
+Install dependencies
+
+```bash
+bun install
+```
+
 Edit `config.ts` to suit your needs
 
 Generate a random string for `forwarding.secret`. (if you're using `player-info-forwarding=modern`)
